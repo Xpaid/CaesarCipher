@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Caesar Cipher</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #121212;
+        color: #ffffff;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+
+      .container {
+        background-color: #1e1e1e;
+        border-radius: 15px;
+        padding: 30px;
+        width: 90%;
+        max-width: 700px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      }
+
+      h1 {
+        color: #ff6f61;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 2.5rem;
+      }
+
+      textarea,
+      input,
+      select {
+        width: 100%;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: none;
+        background-color: #333;
+        color: #f1f1f1;
+        font-size: 1rem;
+      }
+
+      textarea {
+        resize: none;
+        overflow: auto;
+      }
+
+      button {
+        width: 100%;
+        padding: 15px;
+        background-color: #ff6f61;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 20px;
+      }
+
+      button:hover {
+        background-color: #ff4757;
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        margin: 10px 0;
+        gap: 10px;
+      }
+
+      select,
+      input#shift {
+        flex-grow: 1;
+      }
+
+      h3 {
+        color: #ffd700;
+        margin-top: 20px;
+        font-size: 1.3rem;
+      }
+
+      label {
+        font-size: 1rem;
+        color: #ff6f61;
+      }
+
+      footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+        padding: 10px 0;
+        background-color: #1e1e1e;
+        color: #ffd700;
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 2rem;
+        }
+
+        button {
+          padding: 12px;
+          font-size: 1rem;
+        }
+
+        textarea,
+        input,
+        select {
+          padding: 12px;
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Caesar Cipher Encryptor</h1>
+
+      <textarea
+        id="inputMessage"
+        rows="6"
+        placeholder="Type your message..."
+      ></textarea>
+
+      <div class="row">
+        <label for="action">Action:</label>
+        <select id="action">
+          <option value="encrypt">Encrypt</option>
+          <option value="decrypt">Decrypt</option>
+        </select>
+
+        <input
+          type="number"
+          id="shift"
+          value="3"
+          min="0"
+          max="25"
+          placeholder="Shift"
+        />
+      </div>
+
+      <h3>Result:</h3>
+      <textarea id="outputMessage" rows="6" readonly></textarea>
+    </div>
+
+    <footer>&copy; 2024 Encryptor By Jet</footer>
+
+    <script>
+      const inputMessage = document.getElementById("inputMessage");
+      const outputMessage = document.getElementById("outputMessage");
+      const action = document.getElementById("action");
+      const shiftInput = document.getElementById("shift");
+
+      inputMessage.addEventListener("input", updateResult);
+      shiftInput.addEventListener("input", updateResult);
+      action.addEventListener("change", updateResult);
+
+      function updateResult() {
+        const message = inputMessage.value;
+        const selectedAction = action.value;
+        const shift = parseInt(shiftInput.value) || 0;
+        let result = caesarCipher(message, shift, selectedAction === "decrypt");
+        outputMessage.value = result;
+      }
+
+      function caesarCipher(str, shift, decrypt = false) {
+        if (decrypt) shift = (26 - shift) % 26;
+        return str
+          .split("")
+          .map((char) => {
+            if (char.match(/[a-zA-Z]/)) {
+              const charCode = char.charCodeAt(0);
+              const base = charCode >= 65 && charCode <= 90 ? 65 : 97;
+              return String.fromCharCode(
+                ((charCode - base + shift) % 26) + base
+              );
+            }
+            return char;
+          })
+          .join("");
+      }
+    </script>
+  </body>
+</html>
